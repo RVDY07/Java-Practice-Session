@@ -7,14 +7,21 @@ import com.java.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Value("${spring.application.name}")
     private String name;
@@ -23,7 +30,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public String introduce(Map<String, Object> payload) {
+    public String introduce() {
         return name;
     }
 
@@ -34,13 +41,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel addUser(UserModel userModel) throws DataException {
-
-        if(userModel.getAge()==null){
-            throw new DataException("Age cannot be null", HttpStatus.BAD_REQUEST);
-        }
-
         return userRepository.save(userModel);
     }
 
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        Optional<UserModel> userModelOptional = userRepository.findByUserName(username);
+
+        if(!userModelOptional.isPresent()){
+            return null;
+        }
+
+        return new User(userModelOptional.get().getUserName(),
+                        userModelOptional.get().getPassword(),
+                        Collections.singleton(new SimpleGrantedAuthority(userModelOptional.get().getRoles())));
+    }
 }

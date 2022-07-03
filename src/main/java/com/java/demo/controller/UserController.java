@@ -25,8 +25,8 @@ public class UserController extends AbstractRestService {
     private UserService userService;
 
     @PostMapping(value="/introduce")
-    public String introduce(@RequestBody Map<String,Object> payload) {
-        return userService.introduce(payload);
+    public String introduce() {
+        return userService.introduce();
     }
 
     @GetMapping(value="/getUsers")

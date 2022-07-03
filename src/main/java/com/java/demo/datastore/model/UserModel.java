@@ -8,7 +8,6 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@AllArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -16,9 +15,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class UserModel {
 
     @Id
-    private ObjectId id;
-    private String name;
-    private Integer age;
-    private String job;
+    private String id;
+    private String userName;
+    private String password;
+    private String roles;
+    private Boolean active;
+
+    public UserModel(String userName, String password, String roles, Boolean active){
+        this.userName = userName;
+        this.password = password;
+        this.roles = roles;
+        this.active = active;
+    }
 
 }

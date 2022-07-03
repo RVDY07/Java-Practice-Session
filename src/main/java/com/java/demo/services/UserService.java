@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface UserService {
 
-    String introduce( Map<String,Object> payload);
+    String introduce();
 
     List<?> fetchUsers();
 
